@@ -16,7 +16,7 @@ public class App {
         frame.setLayout(new GridLayout(10, 10));
 
         Minesweeper<JButton> minesweeper = new Minesweeper<>(new SwingGraphicTileFactory(), 10, 10, 10);
-        for (List<JButton> row : minesweeper.getBoard()) {
+        for (List<JButton> row : minesweeper.getBoardTiles()) {
             for (JButton btn : row) {
                 frame.add(btn);
             }

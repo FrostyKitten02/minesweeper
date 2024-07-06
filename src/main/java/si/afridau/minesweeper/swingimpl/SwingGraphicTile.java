@@ -3,25 +3,32 @@ package si.afridau.minesweeper.swingimpl;
 import lombok.Getter;
 import si.afridau.minesweeper.logic.IGraphicTile;
 import si.afridau.minesweeper.logic.ITileActionsHandler;
-import si.afridau.minesweeper.logic.TileType;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
-import javax.swing.plaf.basic.BasicBorders;
-import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class SwingGraphicTile implements IGraphicTile<JButton> {
     @Getter
     private final JButton tile;
-    private final String tempOpenText;
-    public SwingGraphicTile(ITileActionsHandler handler, TileType type) {
-        tile = new JButton();
-        tempOpenText = type.name();
-        tile.addMouseListener(new MouseListener() {
+    private final TileColorSet colorSet;
+    private final TextureSet textureSet;
+
+    public SwingGraphicTile(ITileActionsHandler handler, TileColorSet colorSet, TextureSet textureSet) {
+        this.tile = new JButton();
+        this.colorSet = colorSet;
+        this.textureSet = textureSet;
+        this.tile.setBackground(colorSet.getClosed());
+        this.tile.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
                     handler.placeFlag();
                     return;
@@ -34,41 +41,56 @@ public class SwingGraphicTile implements IGraphicTile<JButton> {
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
             public void mouseReleased(MouseEvent e) {
 
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
+                handler.hover();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-
+                handler.hoverExit();
             }
         });
     }
 
     @Override
     public void displayOpenGraphic() {
-        tile.setText(tempOpenText);
-        tile.setEnabled(false);
-        tile.setBorder(new BasicBorders.ButtonBorder(Color.RED, Color.RED, Color.RED, Color.RED));
+        tile.setBackground(colorSet.getOpened());
+        tile.setIcon(textureSet.getGraphic());
+        tile.setBorder(BorderFactory.createLoweredBevelBorder());
     }
 
     @Override
     public void displayFlagGraphic() {
-        tile.setText("F");
+        tile.setIcon(textureSet.getFlag());
     }
 
     @Override
     public void removeGraphic() {
-        tile.setText("");
+        tile.setIcon(null);
+    }
+
+    @Override
+    public void displayHoverOpened() {
+        tile.setBackground(colorSet.getHoverOpened());
+    }
+
+    @Override
+    public void displayHoverClosed() {
+        tile.setBackground(colorSet.getHoverClosed());
+    }
+
+    @Override
+    public void displayNormalClosed() {
+        tile.setBackground(colorSet.getClosed());
+    }
+
+    @Override
+    public void displayNormalOpened() {
+        tile.setBackground(colorSet.getOpened());
     }
 }

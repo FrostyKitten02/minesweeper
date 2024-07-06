@@ -5,4 +5,8 @@ public interface IGraphicTile<T> {
     void displayOpenGraphic();
     void displayFlagGraphic();
     void removeGraphic();
+    void displayHoverOpened();
+    void displayHoverClosed();
+    void displayNormalClosed();
+    void displayNormalOpened();
 }

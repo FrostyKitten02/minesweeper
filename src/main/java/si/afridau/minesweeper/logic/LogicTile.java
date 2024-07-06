@@ -49,6 +49,32 @@ public class LogicTile implements ILogicTile {
         }
     }
 
+    @Override
+    public void hover() {
+        if (graphicTile == null) {
+            throw new RuntimeException("No graphic tile set on logic tile!");
+        }
+
+        if (state == TileState.CLOSED || state == TileState.FLAGGED) {
+            graphicTile.displayHoverClosed();
+        } else {
+            graphicTile.displayHoverOpened();
+        }
+    }
+
+    @Override
+    public void hoverExit() {
+        if (graphicTile == null) {
+            throw new RuntimeException("No graphic tile set on logic tile!");
+        }
+
+        if (state == TileState.CLOSED || state == TileState.FLAGGED) {
+            graphicTile.displayNormalClosed();
+        } else {
+            graphicTile.displayNormalOpened();
+        }
+    }
+
     //this is then used for recursive calls so we can differentiate between user click and internal call
     @Override
     public void onTileOpenInternal(boolean userInput) {
@@ -94,7 +120,7 @@ public class LogicTile implements ILogicTile {
     }
 
     public boolean canPlaceOrRemoveFlag() {
-        return (state == TileState.FLAGGED || state == TileState.CLOSED) && gameState.getState().isCanContinue();
+        return state != TileState.OPENED && gameState.getState().isCanContinue();
     }
 
 

@@ -43,7 +43,7 @@ public class Minesweeper<T> implements GameEventListener, IGameState {
                 TileType tileType = getTileType(mines, i, j, height, width);
                 ILogicTile lTile = logicTileFactory.create(tileType, this);
                 logicTiles[i][j] = lTile;
-                IGraphicTile<T> gTile = graphicTileFactory.createTile(lTile, tileType);
+                IGraphicTile<T> gTile = graphicTileFactory.createTile(lTile, tileType, i, j);
                 lTile.setGraphicTile(gTile);
                 row.add(gTile.getTile());
             }

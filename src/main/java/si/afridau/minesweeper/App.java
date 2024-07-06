@@ -3,6 +3,7 @@ package si.afridau.minesweeper;
 
 import si.afridau.minesweeper.logic.Minesweeper;
 import si.afridau.minesweeper.swingimpl.SwingGraphicTileFactory;
+import si.afridau.minesweeper.swingimpl.TextureFactory;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,7 +16,9 @@ public class App {
         JFrame frame = new JFrame("Minesweeper");
         frame.setLayout(new GridLayout(10, 10));
 
-        Minesweeper<JButton> minesweeper = new Minesweeper<>(new SwingGraphicTileFactory(), 10, 10, 10);
+        TextureFactory textureFactory = new TextureFactory();
+        SwingGraphicTileFactory factory = new SwingGraphicTileFactory(textureFactory);
+        Minesweeper<JButton> minesweeper = new Minesweeper<>(factory, 10, 10, 10);
         for (List<JButton> row : minesweeper.getBoardTiles()) {
             for (JButton btn : row) {
                 frame.add(btn);

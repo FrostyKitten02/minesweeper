@@ -10,6 +10,9 @@ import java.util.List;
 public class Minesweeper<T> implements GameEventListener, IGameState {
     private final LogicTileFactory logicTileFactory;
     private final IGraphicTileFactory<T> graphicTileFactory;
+    private final List<IGameListener> gameListeners = new ArrayList<>();
+    private final int height;
+    private final int width;
     private final int maxMines;
     @Getter
     private final List<List<T>> boardTiles;
@@ -22,7 +25,9 @@ public class Minesweeper<T> implements GameEventListener, IGameState {
             //can't have more than 30% of the board as mines
             throw new IllegalArgumentException("Too many mines for this board size");
         }
-        maxMines = mines;
+        this.height = height;
+        this.width = width;
+        this.maxMines = mines;
         this.logicTileFactory = new LogicTileFactory();
         this.graphicTileFactory = graphicTileFactory;
         Pair<ILogicTile[][], List<List<T>>> pair = createBoard(height, width);
@@ -220,14 +225,50 @@ public class Minesweeper<T> implements GameEventListener, IGameState {
         }
     }
 
+    public void addGameListener(IGameListener listener) {
+        this.gameListeners.add(listener);
+    }
+
+    private void notifyGameWon() {
+        for (IGameListener listener : gameListeners) {
+            listener.gameWon();
+        }
+    }
+
+    private void notifyGameLost() {
+        for (IGameListener listener : gameListeners) {
+            listener.gameLost();
+        }
+    }
 
     @Override
     public void gameOver() {
         this.state = GameState.LOST;
+        notifyGameLost();
     }
 
     @Override
     public void checkGameWin() {
-        //TODO implement
+        if (this.state != GameState.IN_PROGRESS) {
+            return;
+        }
+
+        int openedCount = 0;
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                ILogicTile tile = logicTiles[i][j];
+                TileState state = tile.getState();
+                TileType type = tile.getType();
+                if (type != TileType.BOMB && state == TileState.OPENED) {
+                    openedCount++;
+                }
+            }
+        }
+
+        final int totalNoneBombTiles = this.height * this.width - this.maxMines;
+        if (openedCount == totalNoneBombTiles) {
+            this.state = GameState.WON;
+            notifyGameWon();
+        }
     }
 }

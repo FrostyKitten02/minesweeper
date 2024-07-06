@@ -24,6 +24,10 @@ public class LogicTile implements ILogicTile {
     //this is used when user actually clicks to open the tile
     @Override
     public void onTileOpen() {
+        if (gameState.getState() != GameState.IN_PROGRESS) {
+            return;
+        }
+
         if (this.state == TileState.OPENED) {
             pressDownNeighbours();
         }
@@ -33,6 +37,10 @@ public class LogicTile implements ILogicTile {
 
     @Override
     public void onTileRelease() {
+        if (gameState.getState() != GameState.IN_PROGRESS) {
+            return;
+        }
+
         if (this.state != TileState.OPENED) {
             return;
         }
@@ -43,6 +51,10 @@ public class LogicTile implements ILogicTile {
     //this is used when user actually clicks to open the tile
     @Override
     public void placeFlag() {
+        if (gameState.getState() != GameState.IN_PROGRESS) {
+            return;
+        }
+
         if (graphicTile == null) {
             throw new RuntimeException("No graphic tile set on logic tile!");
         }

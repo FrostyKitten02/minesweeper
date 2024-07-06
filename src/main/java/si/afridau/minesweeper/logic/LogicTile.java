@@ -204,26 +204,6 @@ public class LogicTile implements ILogicTile {
         }
     }
 
-    //opens all neighbours that regardless if they are flagged or not
-    //it will un-flag all miss flagged tiles and then open all of un-flagged tiles
-    private void openNeighbours() {
-        for (ILogicTile neighbour : neighbours) {
-            if (neighbour == null) {
-                continue;
-            }
-
-            if (neighbour.getState() == TileState.OPENED) {
-                continue;
-            }
-
-            if (neighbour.getState() == TileState.FLAGGED && neighbour.getType() == TileType.BOMB) {
-                neighbour.placeFlag();
-            }
-
-            neighbour.onTileOpenInternal();
-        }
-    }
-
     public boolean canOpen() {
         return state == TileState.CLOSED && gameState.getState().isCanContinue();
     }

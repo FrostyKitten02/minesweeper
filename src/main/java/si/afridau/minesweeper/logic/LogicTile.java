@@ -3,9 +3,6 @@ package si.afridau.minesweeper.logic;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class LogicTile implements ILogicTile {
     @Getter
     private final TileType type;

@@ -7,7 +7,6 @@ import si.afridau.minesweeper.logic.ITileActionsHandler;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
-import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 

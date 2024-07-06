@@ -1,6 +1,5 @@
 package si.afridau.minesweeper.swingimpl;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

@@ -3,6 +3,9 @@ package si.afridau.minesweeper.logic;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LogicTile implements ILogicTile {
     @Getter
     private final TileType type;
@@ -10,6 +13,7 @@ public class LogicTile implements ILogicTile {
     private ILogicTile[] neighbours;
     @Setter()
     private IGraphicTile<?> graphicTile = null;
+    @Getter
     private TileState state = TileState.CLOSED;
     private final GameEventListener gameEventListener;
     private final IGameState gameState;
@@ -23,10 +27,23 @@ public class LogicTile implements ILogicTile {
     //this is used when user actually clicks to open the tile
     @Override
     public void onTileOpen() {
-       onTileOpenInternal(true);
-       gameEventListener.checkGameWin();
+        if (this.state == TileState.OPENED) {
+            pressDownNeighbours();
+        }
+        onTileOpenInternal();
+        gameEventListener.checkGameWin();
     }
 
+    @Override
+    public void onTileRelease() {
+        if (this.state != TileState.OPENED) {
+            return;
+        }
+        unHoverNeighbours();
+        checkNeighboursForBombs();
+    }
+
+    //this is used when user actually clicks to open the tile
     @Override
     public void placeFlag() {
         if (graphicTile == null) {
@@ -55,12 +72,19 @@ public class LogicTile implements ILogicTile {
             throw new RuntimeException("No graphic tile set on logic tile!");
         }
 
+        displayHover();
+    }
+
+    @Override
+    public void displayHover() {
         if (state == TileState.CLOSED || state == TileState.FLAGGED) {
             graphicTile.displayHoverClosed();
-        } else {
-            graphicTile.displayHoverOpened();
+            return;
         }
+
+        graphicTile.displayHoverOpened();
     }
+
 
     @Override
     public void hoverExit() {
@@ -68,16 +92,23 @@ public class LogicTile implements ILogicTile {
             throw new RuntimeException("No graphic tile set on logic tile!");
         }
 
+        displayNormal();
+    }
+
+    @Override
+    public void displayNormal() {
         if (state == TileState.CLOSED || state == TileState.FLAGGED) {
             graphicTile.displayNormalClosed();
-        } else {
-            graphicTile.displayNormalOpened();
+            return;
         }
+
+        graphicTile.displayNormalOpened();
     }
+
 
     //this is then used for recursive calls so we can differentiate between user click and internal call
     @Override
-    public void onTileOpenInternal(boolean userInput) {
+    public void onTileOpenInternal() {
         if (graphicTile == null) {
             throw new RuntimeException("No graphic tile set on logic tile!");
         }
@@ -86,21 +117,19 @@ public class LogicTile implements ILogicTile {
             return;
         }
 
-        graphicTile.displayOpenGraphic();
         this.state = TileState.OPENED;
+        graphicTile.displayOpenGraphic();
         switch (type) {
             case BOMB:
-                if (!userInput) {
-                    break;
-                }
                 this.gameEventListener.gameOver();
                 break;
             case EMPTY:
                 for (ILogicTile neighbour : neighbours) {
-                    if (neighbour == null) {
+                    if (neighbour == null || neighbour.getType() == TileType.BOMB) {
                         continue;
                     }
-                    neighbour.onTileOpenInternal(false);
+
+                    neighbour.onTileOpenInternal();
                 }
                 break;
             default:
@@ -109,11 +138,93 @@ public class LogicTile implements ILogicTile {
                         continue;
                     }
 
-                    neighbour.onTileOpenInternal(false);
+                    neighbour.onTileOpenInternal();
                 }
                 break;
         }
         graphicTile.displayOpenGraphic();
+    }
+
+    private void pressDownNeighbours() {
+        for (ILogicTile neighbour : neighbours) {
+            if (neighbour == null) {
+                continue;
+            }
+
+            if (neighbour.getState() == TileState.OPENED || neighbour.getState() == TileState.FLAGGED) {
+                continue;
+            }
+
+            neighbour.displayHover();
+        }
+    }
+
+    private void unHoverNeighbours() {
+        for (ILogicTile neighbour : neighbours) {
+            if (neighbour == null) {
+                continue;
+            }
+
+            if (neighbour.getState() == TileState.OPENED || neighbour.getState() == TileState.FLAGGED) {
+                continue;
+            }
+
+            neighbour.displayNormal();
+        }
+    }
+
+    private void checkNeighboursForBombs() {
+        int flags = 0;
+        final int numberOfBombsAround = this.getType().getNumberOfBombsAround();
+        for (ILogicTile neighbour : neighbours) {
+            if (neighbour == null) {
+                continue;
+            }
+
+            if (neighbour.getState() == TileState.OPENED) {
+                continue;
+            }
+
+            if (neighbour.getState() == TileState.FLAGGED) {
+                flags++;
+            }
+        }
+
+        if (flags != numberOfBombsAround) {
+            return;
+        }
+
+        for (ILogicTile neighbour : neighbours) {
+            if (neighbour == null) {
+                continue;
+            }
+
+            if (neighbour.getState() == TileState.OPENED) {
+                continue;
+            }
+
+            neighbour.onTileOpenInternal();
+        }
+    }
+
+    //opens all neighbours that regardless if they are flagged or not
+    //it will un-flag all miss flagged tiles and then open all of un-flagged tiles
+    private void openNeighbours() {
+        for (ILogicTile neighbour : neighbours) {
+            if (neighbour == null) {
+                continue;
+            }
+
+            if (neighbour.getState() == TileState.OPENED) {
+                continue;
+            }
+
+            if (neighbour.getState() == TileState.FLAGGED && neighbour.getType() == TileType.BOMB) {
+                neighbour.placeFlag();
+            }
+
+            neighbour.onTileOpenInternal();
+        }
     }
 
     public boolean canOpen() {

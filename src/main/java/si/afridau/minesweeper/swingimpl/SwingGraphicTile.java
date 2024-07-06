@@ -7,6 +7,7 @@ import si.afridau.minesweeper.logic.ITileActionsHandler;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -17,7 +18,7 @@ public class SwingGraphicTile implements IGraphicTile<JButton> {
     private final TextureSet textureSet;
 
     public SwingGraphicTile(ITileActionsHandler handler, TileColorSet colorSet, TextureSet textureSet) {
-        this.tile = new JButton();
+        this.tile = createButton();
         this.colorSet = colorSet;
         this.textureSet = textureSet;
         this.tile.setBackground(colorSet.getClosed());
@@ -42,7 +43,10 @@ public class SwingGraphicTile implements IGraphicTile<JButton> {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    handler.onTileRelease();
+                    return;
+                }
             }
 
             @Override
@@ -55,6 +59,13 @@ public class SwingGraphicTile implements IGraphicTile<JButton> {
                 handler.hoverExit();
             }
         });
+    }
+
+    private JButton createButton() {
+        JButton button = new JButton();
+        button.setContentAreaFilled(false);
+        button.setOpaque(true);
+        return button;
     }
 
     @Override

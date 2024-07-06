@@ -16,11 +16,14 @@ import java.util.List;
 public class App {
     public static void main( String[] args ) {
         JFrame frame = new JFrame("Minesweeper");
-        frame.setLayout(new GridLayout(10, 10));
+        final int rows = 20;
+        final int cols = 20;
+        final int mines = 40;
+        frame.setLayout(new GridLayout(rows, cols));
 
         TextureFactory textureFactory = new TextureFactory();
         SwingGraphicTileFactory factory = new SwingGraphicTileFactory(textureFactory);
-        Minesweeper<JButton> minesweeper = new Minesweeper<>(factory, 10, 10, 10);
+        Minesweeper<JButton> minesweeper = new Minesweeper<>(factory, rows, cols, mines);
 
         SwingGameListener listener = new SwingGameListener(frame);
         minesweeper.addGameListener(listener);

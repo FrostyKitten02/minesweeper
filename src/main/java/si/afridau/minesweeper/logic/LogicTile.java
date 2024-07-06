@@ -30,6 +30,7 @@ public class LogicTile implements ILogicTile {
 
         if (this.state == TileState.OPENED) {
             pressDownNeighbours();
+            return;
         }
         onTileOpenInternal();
         gameEventListener.checkGameWin();
@@ -203,6 +204,7 @@ public class LogicTile implements ILogicTile {
             return;
         }
 
+        boolean anyNotOpenedOrFlagged = false;
         for (ILogicTile neighbour : neighbours) {
             if (neighbour == null) {
                 continue;
@@ -212,8 +214,17 @@ public class LogicTile implements ILogicTile {
                 continue;
             }
 
+            if (neighbour.getState() != TileState.FLAGGED) {
+                anyNotOpenedOrFlagged = true;
+            }
+
             neighbour.onTileOpenInternal();
         }
+
+        if (anyNotOpenedOrFlagged) {
+            gameEventListener.checkGameWin();
+        }
+
     }
 
     public boolean canOpen() {

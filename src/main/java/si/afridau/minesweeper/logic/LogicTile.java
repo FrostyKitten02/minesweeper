@@ -104,12 +104,13 @@ public class LogicTile implements ILogicTile {
                 }
                 break;
             default:
-                /**
-                 for (ILogicTile neighbour : neighbours) {
-                 if (neighbour.getType() == TileType.EMPTY) {
-                 neighbour.onTileOpenInternal(false);
-                 }
-                 }**/
+                for (ILogicTile neighbour : neighbours) {
+                    if (neighbour == null || neighbour.getType() != TileType.EMPTY) {
+                        continue;
+                    }
+
+                    neighbour.onTileOpenInternal(false);
+                }
                 break;
         }
         graphicTile.displayOpenGraphic();

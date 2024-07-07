@@ -13,4 +13,7 @@ public class TileColorSet {
 
     private final Color hoverOpened;
     private final Color hoverClosed;
+
+    private final Color openedUserPressed;
+    private final Color hoverOpenedUserPressed;
 }

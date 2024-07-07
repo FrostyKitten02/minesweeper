@@ -9,4 +9,5 @@ public interface IGraphicTile<T> {
     void displayHoverClosed();
     void displayNormalClosed();
     void displayNormalOpened();
+    void setUserPressed(boolean userPressed);
 }

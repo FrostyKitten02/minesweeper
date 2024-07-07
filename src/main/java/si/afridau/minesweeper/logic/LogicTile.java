@@ -115,6 +115,19 @@ public class LogicTile implements ILogicTile {
         graphicTile.displayNormalOpened();
     }
 
+    @Override
+    public void gameEnded() {
+        if (graphicTile == null) {
+            throw new RuntimeException("No graphic tile set on logic tile!");
+        }
+
+        if (type == TileType.BOMB && state == TileState.CLOSED || state == TileState.FLAGGED) {
+            //TODO show bombs
+            this.state = TileState.OPENED;
+            graphicTile.displayOpenGraphic();
+        }
+    }
+
 
     //this is then used for recursive calls so we can differentiate between user click and internal call
     @Override
@@ -132,6 +145,7 @@ public class LogicTile implements ILogicTile {
         switch (type) {
             case BOMB:
                 this.gameEventListener.gameOver();
+                graphicTile.setUserPressed(true);
                 break;
             case EMPTY:
                 for (ILogicTile neighbour : neighbours) {

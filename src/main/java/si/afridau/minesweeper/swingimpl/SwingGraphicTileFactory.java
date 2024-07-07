@@ -13,28 +13,36 @@ public class SwingGraphicTileFactory implements IGraphicTileFactory<JButton> {
             new Color( 0xe89eff ),
             new Color( 0xb8e5ff ),
             new Color( 0x6e0090 ),
-            new Color( 0x006199 )
+            new Color( 0x006199 ),
+            null,
+            null
     );
 
     private static final TileColorSet evenSet = new TileColorSet(
             new Color(0xdb69ff),
             new Color(0x80d0ff),
             new Color(0x5f007d),
-            new Color(0x005486)
+            new Color(0x005486),
+            null,
+            null
     );
 
     private static final TileColorSet oddSetBomb = new TileColorSet(
-            new Color(0xFF0000),
+            new Color( 0xe89eff ),
             new Color( 0xb8e5ff ),
-            new Color(0x7D0000),
-            new Color( 0x006199 )
+            new Color( 0x6e0090 ),
+            new Color( 0x006199 ),
+            new Color(0xFF0000),
+            new Color(0x7D0000)
     );
 
     private static final TileColorSet evenSetBomb = new TileColorSet(
-            new Color(0xFF0000),
+            new Color(0xdb69ff),
             new Color(0x80d0ff),
-            new Color(0x7D0000),
-            new Color(0x005486)
+            new Color(0x5f007d),
+            new Color(0x005486),
+            new Color(0xFF0000),
+            new Color(0x7D0000)
     );
 
     private final TextureFactory textureFactory;

@@ -8,4 +8,5 @@ public interface ILogicTile extends ITileActionsHandler {
     void onTileOpenInternal();
     void displayHover();
     void displayNormal();
+    void gameEnded();
 }

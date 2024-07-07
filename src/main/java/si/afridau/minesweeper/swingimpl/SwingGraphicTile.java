@@ -1,6 +1,7 @@
 package si.afridau.minesweeper.swingimpl;
 
 import lombok.Getter;
+import lombok.Setter;
 import si.afridau.minesweeper.logic.IGraphicTile;
 import si.afridau.minesweeper.logic.ITileActionsHandler;
 
@@ -13,6 +14,8 @@ import java.awt.event.MouseListener;
 public class SwingGraphicTile implements IGraphicTile<JButton> {
     @Getter
     private final JButton tile;
+    @Setter
+    private boolean userPressed = false;
     private final TileColorSet colorSet;
     private final TextureSet textureSet;
 
@@ -20,7 +23,7 @@ public class SwingGraphicTile implements IGraphicTile<JButton> {
         this.tile = createButton();
         this.colorSet = colorSet;
         this.textureSet = textureSet;
-        this.tile.setBackground(colorSet.getClosed());
+        displayNormalClosed();
         this.tile.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -86,6 +89,10 @@ public class SwingGraphicTile implements IGraphicTile<JButton> {
 
     @Override
     public void displayHoverOpened() {
+        if (userPressed) {
+            tile.setBackground(colorSet.getHoverOpenedUserPressed());
+            return;
+        }
         tile.setBackground(colorSet.getHoverOpened());
     }
 
@@ -96,11 +103,17 @@ public class SwingGraphicTile implements IGraphicTile<JButton> {
 
     @Override
     public void displayNormalClosed() {
+        tile.setBorder(BorderFactory.createRaisedBevelBorder());
         tile.setBackground(colorSet.getClosed());
     }
 
     @Override
     public void displayNormalOpened() {
+        tile.setBorder(BorderFactory.createLoweredBevelBorder());
+        if (userPressed) {
+            tile.setBackground(colorSet.getOpenedUserPressed());
+            return;
+        }
         tile.setBackground(colorSet.getOpened());
     }
 }

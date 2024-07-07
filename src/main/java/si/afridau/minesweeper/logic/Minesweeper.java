@@ -244,6 +244,12 @@ public class Minesweeper<T> implements GameEventListener, IGameState {
     @Override
     public void gameOver() {
         this.state = GameState.LOST;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                ILogicTile tile = logicTiles[i][j];
+                tile.gameEnded();
+            }
+        }
         notifyGameLost();
     }
 
